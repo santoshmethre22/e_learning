@@ -95,3 +95,40 @@ export const verifyUser=TryCatch(async(req,res)=>{
   
 });
 
+
+export const loginUser=TryCatch(async(req,res)=>{
+
+  const {email,name}=req.body;
+
+    const user=await User.findOne({
+        email
+
+    })
+
+    if(!user){
+        res.status(404).json({
+          message:"the user not found"
+        })
+    }
+
+    const mathPassword = await bcrypt.compare(password, user.password);
+
+    if(!mathPassword){
+      res.status(404).json({
+        message:"wrong password"
+      })
+    }
+
+
+    const token=jwt.sign({_id:user._id},process.env.jwt_Src,{
+      expiresIn:"15d"
+    })
+
+
+    res.statu(200).json({
+      message:`welcome ${user.name}`,
+      token,
+      user
+    });
+
+})
