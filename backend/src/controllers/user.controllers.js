@@ -98,7 +98,7 @@ export const verifyUser=TryCatch(async(req,res)=>{
 
 export const loginUser=TryCatch(async(req,res)=>{
 
-  const {email,name}=req.body;
+  const {email,password}=req.body;
 
     const user=await User.findOne({
         email
@@ -125,10 +125,20 @@ export const loginUser=TryCatch(async(req,res)=>{
     })
 
 
-    res.statu(200).json({
+    res.status(200).json({
       message:`welcome ${user.name}`,
       token,
       user
     });
+
+})
+
+
+export const profile=TryCatch(async(req,res)=>{
+
+    const user=await User.findById(req.user._id);
+
+    res.json({user})
+
 
 })
