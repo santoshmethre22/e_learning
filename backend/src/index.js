@@ -17,13 +17,17 @@ app.get("/", (req, res) => {
 });
 
 
-//all the routers are added here 
+app.use("/uploads", express.static("uploads"));
+
+
+
+//all the routers are added here --------------------------------------->
 
 import userRouter from "./routers/user.routers.js"
-
+import adminRouter from "./routers/admin.router.js"
 
 app.use("/api",userRouter)
-
+app.use("/api",adminRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
