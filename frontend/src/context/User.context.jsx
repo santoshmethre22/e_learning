@@ -18,15 +18,11 @@ export const UsercontextProvider = ({ children }) => {
         password,
       });
 
-      if (data && data.token && data.user) {
+     
         toast.success("Login successful!");
         localStorage.setItem("token", data.token);
         setUser(data.user);
         setIsAuth(true);
-      } else {
-        toast.error("Login failed. Please try again.");
-      }
-
       setBtnLoading(false);
       navigate("/");
 
@@ -37,8 +33,71 @@ export const UsercontextProvider = ({ children }) => {
     }
   };
 
+
+  const register = async ({name, email, password, navigate }) => {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post(`${server}/api/user/register`, {
+        name,
+        email,
+        password,
+      });
+
+    
+        toast.success("Login successful!");
+        localStorage.setItem("activationToken", data.activationToken);
+        setUser(data.user);
+        
+      setBtnLoading(false);
+      navigate("/verify");
+
+    } catch (error) {
+      setBtnLoading(false);
+    
+      toast.error(error.response?.data?.message || "Something went wrong!");
+    }
+  };
+
+  const verifyUser=async({otp,navigate})=>{
+
+     try {  
+
+      setBtnLoading(true)
+
+      const activationToken=localStorage.getItem("activationToken");
+
+      const {data}=await axios.post(`${server}/api/user/verify`,{
+        otp,
+        activationToken
+      })
+
+
+      toast.success(data.message);
+      navigate("/login");
+      localStorage.clear();
+      setBtnLoading(false);
+      
+     } catch (error) {
+
+      toast.error(error.response.data.message);
+      setBtnLoading(false);
+      
+     }
+
+
+  }
+
   return (
-    <UserContext.Provider value={{ user, isAuth, btnLoading, loginUser }}>
+    <UserContext.Provider 
+    value={{ 
+      user,
+       isAuth, 
+      btnLoading, 
+      loginUser,
+      register,
+      verifyUser
+
+    }}>
       {children}
       <Toaster />
     </UserContext.Provider>

@@ -27,7 +27,7 @@ export const registerUser = async (req, res) => {
     };
 
     // Generate OTP
-    const otp = Math.floor(Math.random() * 100000);
+    const otp = Math.floor(Math.random() * 1000000);
 
     // Generate activation token
     const activationToken = jwt.sign(
